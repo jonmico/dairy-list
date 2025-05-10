@@ -1,4 +1,4 @@
-import { Link } from 'lucide-react';
+import { Link, User } from 'lucide-react';
 import { Outlet } from 'react-router';
 
 // TODO: Think about layout more.
@@ -6,8 +6,13 @@ import { Outlet } from 'react-router';
 export default function AppLayout() {
   return (
     <div className='h-screen grid grid-rows-[3.5rem_1fr_4rem]'>
-      <div>This will be a header</div>
-      <div>
+      <div className='border-b border-b-slate-700/75 p-2 flex justify-between items-center'>
+        <div className='text-lg font-bold'>DairyList</div>
+        <div>
+          <User />
+        </div>
+      </div>
+      <div className='flex justify-center items-center'>
         <Outlet />
       </div>
       <div className='border-t border-t-slate-700/75  flex justify-between items-center px-5'>
