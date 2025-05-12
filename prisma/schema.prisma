@@ -23,10 +23,18 @@ model DairyList {
 
 model ListItem {
   id             String    @id @default(uuid())
+  brand          Brand     @relation(fields: [brandId], references: [id])
+  brandId        String
   name           String
   sku            Int
   expirationDate DateTime
   createdAt      DateTime  @default(now())
   dairyList      DairyList @relation(fields: [dairyListId], references: [id], onDelete: Cascade)
   dairyListId    String
+}
+
+model Brand {
+  id       String     @id @default(uuid())
+  name     String
+  ListItem ListItem[]
 }
