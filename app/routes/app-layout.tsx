@@ -10,7 +10,7 @@ export default function AppLayout() {
           <User />
         </div>
       </div>
-      <div className='flex justify-center items-center'>
+      <div className='p-4'>
         <Outlet />
       </div>
       <BottomNavBar>
