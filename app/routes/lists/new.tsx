@@ -4,10 +4,36 @@ import { useForm } from 'react-hook-form';
 interface ListItemInputData {
   brand: string;
   name: string;
+  sku: number;
 }
 
 export default function NewList() {
   const [list, setList] = useState<ListItemInputData[]>([]);
+
+  const itemList = list.map((item) => (
+    <li key={item.name}>
+      {item.brand} - {item.name}: {item.sku}
+    </li>
+  ));
+
+  return (
+    <div className='flex flex-col gap-3'>
+      <h1 className='text-xl font-bold border-b border-b-slate-700/75'>
+        Create a new list
+      </h1>
+      <NewListForm setList={setList} />
+      <ItemList>{itemList}</ItemList>
+    </div>
+  );
+}
+
+interface NewListFormProps {
+  setList: React.Dispatch<React.SetStateAction<ListItemInputData[]>>;
+}
+
+// TODO: SKU field needs min length error.
+
+function NewListForm(props: NewListFormProps) {
   const {
     register,
     formState: { errors },
@@ -16,47 +42,58 @@ export default function NewList() {
   } = useForm<ListItemInputData>();
 
   function handleAddItem(data: ListItemInputData) {
-    setList((state) => [...state, { brand: data.brand, name: data.name }]);
+    props.setList((state) => [
+      ...state,
+      { brand: data.brand, name: data.name, sku: data.sku },
+    ]);
+
     reset();
   }
 
   return (
-    <div className='flex flex-col gap-1'>
-      <h1>Create a new list</h1>
-      <form onSubmit={handleSubmit(handleAddItem)}>
-        <div>
-          <label htmlFor='brand'>Brand</label>
-          <input
-            {...register('brand', { required: true })}
-            className='border rounded border-slate-700'
-            id='brand'
-          />
-          {errors.brand && <div>Brand is required.</div>}
-        </div>
-        <div>
-          <label htmlFor='name'>Name</label>
-          <input
-            {...register('name', { required: true })}
-            className='border rounded border-slate-700'
-            id='name'
-          />
-          {errors.name && <div>Name is required.</div>}
-        </div>
-        <button
-          type='submit'
-          className='border rounded border-slate-700 py-1 px-4'
-        >
-          Add Item
-        </button>
-      </form>
-      <ul>
-        {list &&
-          list.map((item) => (
-            <li key={item.name}>
-              {item.brand} - {item.name}
-            </li>
-          ))}
-      </ul>
-    </div>
+    <form onSubmit={handleSubmit(handleAddItem)}>
+      <div>
+        <label htmlFor='brand'>Brand</label>
+        <input
+          {...register('brand', { required: true })}
+          className='border rounded border-slate-700'
+          id='brand'
+        />
+        {errors.brand && <div>Brand is required.</div>}
+      </div>
+      <div>
+        <label htmlFor='name'>Name</label>
+        <input
+          {...register('name', { required: true })}
+          className='border rounded border-slate-700'
+          id='name'
+        />
+        {errors.name && <div>Name is required.</div>}
+      </div>
+      <div>
+        <label htmlFor='sku'>SKU (Last 5)</label>
+        <input
+          {...register('sku', { required: true, minLength: 5 })}
+          id='sku'
+          type='number'
+          className='border rounded border-slate-700'
+        />
+        {errors.sku && <div>SKU is required.</div>}
+      </div>
+      <button
+        type='submit'
+        className='border rounded border-slate-700 py-1 px-4'
+      >
+        Add Item
+      </button>
+    </form>
   );
+}
+
+interface ItemListProps {
+  children: React.ReactNode;
+}
+
+function ItemList(props: ItemListProps) {
+  return <ul>{props.children}</ul>;
 }
