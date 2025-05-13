@@ -31,8 +31,6 @@ interface NewListFormProps {
   setList: React.Dispatch<React.SetStateAction<ListItemInputData[]>>;
 }
 
-// TODO: SKU field needs min length error.
-
 function NewListForm(props: NewListFormProps) {
   const {
     register,
@@ -59,7 +57,7 @@ function NewListForm(props: NewListFormProps) {
           className='border rounded border-slate-700'
           id='brand'
         />
-        {errors.brand && <div>Brand is required.</div>}
+        {errors.brand && <div>Required.</div>}
       </div>
       <div>
         <label htmlFor='name'>Name</label>
@@ -68,7 +66,7 @@ function NewListForm(props: NewListFormProps) {
           className='border rounded border-slate-700'
           id='name'
         />
-        {errors.name && <div>Name is required.</div>}
+        {errors.name && <div>Required.</div>}
       </div>
       <div>
         <label htmlFor='sku'>SKU (Last 5)</label>
@@ -76,9 +74,17 @@ function NewListForm(props: NewListFormProps) {
           {...register('sku', { required: true, minLength: 5 })}
           id='sku'
           type='number'
+          inputMode='numeric'
           className='border rounded border-slate-700'
         />
-        {errors.sku && <div>SKU is required.</div>}
+        {errors.sku && (
+          <div>
+            {errors.sku.type === 'required' && <div>Required</div>}
+            {errors.sku.type === 'minLength' && (
+              <div>Minimum of 5 digits required</div>
+            )}
+          </div>
+        )}
       </div>
       <button
         type='submit'
