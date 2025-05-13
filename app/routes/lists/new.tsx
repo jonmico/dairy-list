@@ -5,6 +5,7 @@ interface ListItemInputData {
   brand: string;
   name: string;
   sku: number;
+  expirationDate: string;
 }
 
 export default function NewList() {
@@ -42,7 +43,12 @@ function NewListForm(props: NewListFormProps) {
   function handleAddItem(data: ListItemInputData) {
     props.setList((state) => [
       ...state,
-      { brand: data.brand, name: data.name, sku: data.sku },
+      {
+        brand: data.brand,
+        name: data.name,
+        sku: data.sku,
+        expirationDate: data.expirationDate,
+      },
     ]);
 
     reset();
@@ -86,6 +92,14 @@ function NewListForm(props: NewListFormProps) {
           </div>
         )}
       </div>
+      <div>
+        <label htmlFor='expirationDate'>Expiration Date</label>
+        <input
+          {...register('expirationDate', { required: true })}
+          id='expirationDate'
+          type='date'
+        />
+      </div>
       <button
         type='submit'
         className='border rounded border-slate-700 py-1 px-4'
@@ -101,5 +115,5 @@ interface ItemListProps {
 }
 
 function ItemList(props: ItemListProps) {
-  return <ul>{props.children}</ul>;
+  return <ul className='flex flex-col gap-1'>{props.children}</ul>;
 }
