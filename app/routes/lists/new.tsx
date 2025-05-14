@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+// TODO: Does date input work on mobile?
+// TODO: Validation for 5 digits in SKU, styles are not applying
+/* 
+  TODO: Repeating classNames a million times is not good.
+  Make some string variables?
+*/
 interface ListItemInputData {
   brand: string;
   name: string;
@@ -55,59 +61,84 @@ function NewListForm(props: NewListFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit(handleAddItem)}>
-      <div>
+    <form
+      noValidate
+      onSubmit={handleSubmit(handleAddItem)}
+      className='flex flex-col gap-3'
+    >
+      <FormInput>
         <label htmlFor='brand'>Brand</label>
         <input
           {...register('brand', { required: true })}
-          className='border rounded border-slate-700'
+          className='user-invalid:border-red-400 border rounded border-slate-700 p-0.5'
           id='brand'
+          required
         />
-        {errors.brand && <div>Required.</div>}
-      </div>
-      <div>
+        {errors.brand && <div className='text-red-400 text-sm'>Required</div>}
+      </FormInput>
+      <FormInput>
         <label htmlFor='name'>Name</label>
         <input
           {...register('name', { required: true })}
-          className='border rounded border-slate-700'
+          className='user-invalid:border-red-400 border rounded border-slate-700 p-0.5'
           id='name'
+          required
         />
-        {errors.name && <div>Required.</div>}
-      </div>
-      <div>
+        {errors.name && <div className='text-red-400 text-sm'>Required</div>}
+      </FormInput>
+      <FormInput>
         <label htmlFor='sku'>SKU (Last 5)</label>
         <input
           {...register('sku', { required: true, minLength: 5 })}
           id='sku'
           type='number'
           inputMode='numeric'
-          className='border rounded border-slate-700'
+          className='user-invalid:border-red-400 border rounded border-slate-700 p-0.5'
+          required
+          minLength={5}
         />
         {errors.sku && (
           <div>
-            {errors.sku.type === 'required' && <div>Required</div>}
+            {errors.sku.type === 'required' && (
+              <div className='text-red-400 text-sm'>Required</div>
+            )}
             {errors.sku.type === 'minLength' && (
-              <div>Minimum of 5 digits required</div>
+              <div className='text-red-400 text-sm'>
+                Minimum of 5 digits required
+              </div>
             )}
           </div>
         )}
-      </div>
-      <div>
+      </FormInput>
+      <FormInput>
         <label htmlFor='expirationDate'>Expiration Date</label>
         <input
           {...register('expirationDate', { required: true })}
           id='expirationDate'
           type='date'
+          required
+          className='user-invalid:border-red-400 border rounded border-slate-700 p-0.5'
         />
-      </div>
+        {errors.expirationDate && (
+          <div className='text-red-400 text-sm'>Required</div>
+        )}
+      </FormInput>
       <button
         type='submit'
-        className='border rounded border-slate-700 py-1 px-4'
+        className='border rounded bg-blue-700 border-slate-700 py-1 px-4'
       >
         Add Item
       </button>
     </form>
   );
+}
+
+interface FormInputProps {
+  children: React.ReactNode;
+}
+
+function FormInput(props: FormInputProps) {
+  return <div className='flex flex-col gap-0.5'>{props.children}</div>;
 }
 
 interface ItemListProps {
