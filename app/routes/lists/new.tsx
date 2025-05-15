@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useFetcher } from 'react-router';
 import type { Route } from './+types/new';
 
 // TODO: Does date input work on mobile?
@@ -9,7 +10,15 @@ import type { Route } from './+types/new';
   Make some string variables?
 */
 
-export async function action({ request }: Route.ActionArgs) {}
+export async function action({ request }: Route.ActionArgs) {
+  console.log('You are in the action for new list');
+
+  const formData = await request.formData();
+
+  const list = formData.get('list');
+
+  console.log(list);
+}
 
 interface ListItemInputData {
   brand: string;
@@ -19,6 +28,7 @@ interface ListItemInputData {
 }
 
 export default function NewList() {
+  const fetcher = useFetcher();
   const [list, setList] = useState<ListItemInputData[]>([]);
 
   const itemList = list.map((item) => (
@@ -27,11 +37,13 @@ export default function NewList() {
     </li>
   ));
 
-  function saveList(evt: React.FormEvent) {
+  function saveList(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
     const jsonList = JSON.stringify(list);
 
     console.log(jsonList);
+
+    fetcher.submit({ list: jsonList }, { method: 'post' });
   }
 
   return (
@@ -42,16 +54,11 @@ export default function NewList() {
       <NewListForm setList={setList} />
       <ItemList>{itemList}</ItemList>
       {list.length > 0 && (
-        // <Form method='post'>
-        //   <button className='border rounded bg-blue-700 border-slate-700 py-1 px-4'>
-        //     Save List
-        //   </button>
-        // </Form>
-        <form onSubmit={saveList}>
+        <fetcher.Form onSubmit={saveList}>
           <button className='border rounded bg-blue-700 border-slate-700 py-1 px-4'>
             Save List
           </button>
-        </form>
+        </fetcher.Form>
       )}
     </div>
   );
