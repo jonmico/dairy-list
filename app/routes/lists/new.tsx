@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import type { Route } from './+types/new';
 
 // TODO: Does date input work on mobile?
 // TODO: Validation for 5 digits in SKU, styles are not applying
@@ -7,6 +8,9 @@ import { useForm } from 'react-hook-form';
   TODO: Repeating classNames a million times is not good.
   Make some string variables?
 */
+
+export async function action({ request }: Route.ActionArgs) {}
+
 interface ListItemInputData {
   brand: string;
   name: string;
@@ -23,6 +27,13 @@ export default function NewList() {
     </li>
   ));
 
+  function saveList(evt: React.FormEvent) {
+    evt.preventDefault();
+    const jsonList = JSON.stringify(list);
+
+    console.log(jsonList);
+  }
+
   return (
     <div className='flex flex-col gap-3'>
       <h1 className='text-xl font-bold border-b border-b-slate-700/75'>
@@ -30,6 +41,18 @@ export default function NewList() {
       </h1>
       <NewListForm setList={setList} />
       <ItemList>{itemList}</ItemList>
+      {list.length > 0 && (
+        // <Form method='post'>
+        //   <button className='border rounded bg-blue-700 border-slate-700 py-1 px-4'>
+        //     Save List
+        //   </button>
+        // </Form>
+        <form onSubmit={saveList}>
+          <button className='border rounded bg-blue-700 border-slate-700 py-1 px-4'>
+            Save List
+          </button>
+        </form>
+      )}
     </div>
   );
 }
