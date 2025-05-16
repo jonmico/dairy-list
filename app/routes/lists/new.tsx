@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFetcher } from 'react-router';
 import type { Route } from './+types/new';
+import { createList } from '../../.server/api/list';
 
 // TODO: Does date input work on mobile?
 // TODO: Validation for 5 digits in SKU, styles are not applying
@@ -10,16 +11,6 @@ import type { Route } from './+types/new';
   Make some string variables?
 */
 
-export async function action({ request }: Route.ActionArgs) {
-  console.log('You are in the action for new list');
-
-  const formData = await request.formData();
-
-  const list = formData.get('list');
-
-  console.log(list);
-}
-
 interface ListItemInputData {
   brand: string;
   name: string;
@@ -27,17 +18,29 @@ interface ListItemInputData {
   expirationDate: string;
 }
 
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const list = formData.get('list');
+
+  if (!list) {
+    return null;
+  }
+  createList(list);
+
+  console.log(list);
+}
+
 export default function NewList() {
   const fetcher = useFetcher();
   const [list, setList] = useState<ListItemInputData[]>([]);
 
   const itemList = list.map((item) => (
-    <li key={item.name}>
+    <li key={item.sku}>
       {item.brand} - {item.name}: {item.sku}
     </li>
   ));
 
-  function saveList(evt: React.FormEvent<HTMLFormElement>) {
+  function handleSaveList(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
     const jsonList = JSON.stringify(list);
 
@@ -54,7 +57,7 @@ export default function NewList() {
       <NewListForm setList={setList} />
       <ItemList>{itemList}</ItemList>
       {list.length > 0 && (
-        <fetcher.Form onSubmit={saveList}>
+        <fetcher.Form onSubmit={handleSaveList}>
           <button className='border rounded bg-blue-700 border-slate-700 py-1 px-4'>
             Save List
           </button>
