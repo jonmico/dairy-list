@@ -20,14 +20,13 @@ interface ListItemInputData {
 
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
-  const list = formData.get('list');
+  const list = formData.get('list') as string;
 
-  if (!list) {
-    return null;
-  }
-  createList(list);
+  const parsedList = JSON.parse(list) as ListItemInputData[];
 
-  console.log(list);
+  createList(parsedList);
+
+  return null;
 }
 
 export default function NewList() {

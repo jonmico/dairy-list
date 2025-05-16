@@ -1,3 +1,5 @@
+// TODO: Write this function.
+
 interface ListItemInputData {
   brand: string;
   name: string;
@@ -5,6 +7,6 @@ interface ListItemInputData {
   expirationDate: string;
 }
 
-export async function createList(list: FormDataEntryValue) {
-  console.log('This is the createList function.');
+export async function createList(list: ListItemInputData[]) {
+  console.log(list);
 }
