@@ -1,5 +1,7 @@
 // TODO: Write this function.
 
+import { db } from "~/.server/db";
+
 interface ListItemInputData {
   brand: string;
   name: string;
@@ -8,5 +10,9 @@ interface ListItemInputData {
 }
 
 export async function createList(list: ListItemInputData[]) {
-  console.log(list);
+ const items = await db.listItem.createMany({
+  data: [
+    ...list.map((item) => {name: item.name, sku: item.sku,  })
+  ]
+ })
 }
