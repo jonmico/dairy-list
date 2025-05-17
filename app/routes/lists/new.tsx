@@ -24,9 +24,11 @@ export async function action({ request }: Route.ActionArgs) {
 
   const parsedList = JSON.parse(list) as ListItemInputData[];
 
-  createList(parsedList);
+  let newList = await createList(parsedList, 'test name');
 
-  return null;
+  console.log(newList);
+
+  return { list: newList };
 }
 
 export default function NewList() {

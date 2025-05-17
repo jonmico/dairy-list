@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
   output   = "../app/generated/prisma"
 }
 
@@ -17,8 +17,9 @@ model DairyList {
 
 model ListItem {
   id             String    @id @default(uuid())
-  brand          Brand     @relation(fields: [brandId], references: [id])
-  brandId        String
+  // brand          Brand     @relation(fields: [brandId], references: [id])
+  // brandId        String
+  brand          String
   name           String
   sku            Int
   expirationDate DateTime
@@ -27,8 +28,8 @@ model ListItem {
   dairyListId    String
 }
 
-model Brand {
-  id       String     @id @default(uuid())
-  name     String
-  ListItem ListItem[]
-}
+// model Brand {
+//   id       String     @id @default(uuid())
+//   name     String
+//   ListItem ListItem[]
+// }
