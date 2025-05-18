@@ -34,10 +34,25 @@ export default function NewList() {
   const [list, setList] = useState<ListItemInputData[]>([]);
 
   const itemList = list.map((item) => (
-    <li key={item.sku}>
-      {item.brand} - {item.name}: {item.sku}
+    <li
+      className='flex justify-between items-center'
+      key={item.sku}
+    >
+      <div>
+        {item.brand} - {item.name}: {item.sku}
+      </div>
+      <button
+        className='px-3 py-1 border rounded border-slate-700 hover:text-slate-300 transition-colors delay-150 ease-in-out'
+        onClick={() => handleRemoveItem(item.sku)}
+      >
+        Remove
+      </button>
     </li>
   ));
+
+  function handleRemoveItem(sku: number) {
+    setList((state) => state.filter((item) => item.sku !== sku));
+  }
 
   function handleSaveList(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();

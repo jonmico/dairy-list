@@ -1,4 +1,3 @@
-// TODO: Write this function.
 import { db } from '~/.server/db';
 
 interface ListItemInputData {
@@ -9,14 +8,6 @@ interface ListItemInputData {
 }
 
 export async function createList(list: ListItemInputData[], listName: string) {
-  // return await db.$transaction(async (tx) => {
-  //   let newList = await tx.dairyList.create({
-  //     data: {
-  //       name: listName,
-  //     },
-  //   });
-  // });
-
   let newList = await db.dairyList.create({
     data: {
       name: listName,

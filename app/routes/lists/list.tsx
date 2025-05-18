@@ -15,9 +15,22 @@ export async function loader({ params }: Route.LoaderArgs) {
 }
 
 export default function List({ loaderData }: Route.ComponentProps) {
+  let list = loaderData.list.items.map((item) => {
+    return (
+      <li key={item.id}>
+        <div>
+          {item.brand} - {item.name}
+        </div>
+        <div>
+          {item.sku} - {item.expirationDate.toDateString()}
+        </div>
+      </li>
+    );
+  });
   return (
     <div>
       <h1>Welcome to the List page.</h1>
+      <ul>{list}</ul>
     </div>
   );
 }

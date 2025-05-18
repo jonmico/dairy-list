@@ -6,7 +6,11 @@ export async function getList(listId: string) {
       id: listId,
     },
     include: {
-      items: true,
+      items: {
+        orderBy: {
+          expirationDate: 'asc',
+        },
+      },
     },
   });
 
