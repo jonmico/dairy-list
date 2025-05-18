@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useFetcher } from 'react-router';
+import { redirect, useFetcher } from 'react-router';
 import type { Route } from './+types/new';
 import { createList } from '../../.server/api/list';
 
@@ -24,11 +24,9 @@ export async function action({ request }: Route.ActionArgs) {
 
   const parsedList = JSON.parse(list) as ListItemInputData[];
 
-  let newList = await createList(parsedList, 'test name');
+  const newList = await createList(parsedList, 'test name');
 
-  console.log(newList);
-
-  return { list: newList };
+  throw redirect(`/lists/${newList.id}`);
 }
 
 export default function NewList() {
@@ -43,9 +41,8 @@ export default function NewList() {
 
   function handleSaveList(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
-    const jsonList = JSON.stringify(list);
 
-    console.log(jsonList);
+    const jsonList = JSON.stringify(list);
 
     fetcher.submit({ list: jsonList }, { method: 'post' });
   }
