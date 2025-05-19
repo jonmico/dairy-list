@@ -51,7 +51,11 @@ function NavItem(props: NavItemProps) {
     <li>
       <NavLink
         to={props.to}
-        className='flex flex-col items-center gap-0.5 px-2.5'
+        className={({ isActive }) =>
+          `flex flex-col items-center gap-0.5 px-2.5 ${
+            isActive ? 'text-slate-200' : 'text-slate-500'
+          }`
+        }
       >
         {props.children}
       </NavLink>
