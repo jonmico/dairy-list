@@ -68,7 +68,7 @@ export default function NewList() {
       <h1 className='text-xl font-bold border-b border-b-slate-700/75'>
         Create a new list
       </h1>
-      <div className='grid grid-rows-[auto_1fr] gap-3 min-h-0'>
+      <div className='grid grid-rows-[auto_1fr] gap-3 overflow-hidden'>
         <NewListForm setList={setList} />
         <ItemList>{itemList}</ItemList>
       </div>
@@ -204,7 +204,7 @@ interface ItemListProps {
 
 function ItemList(props: ItemListProps) {
   return (
-    <div className='overflow-y-auto'>
+    <div className='overflow-auto'>
       <ul className='flex flex-col gap-1'>{props.children}</ul>
     </div>
   );
