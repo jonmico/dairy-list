@@ -12,6 +12,16 @@ import { Trash2 } from 'lucide-react';
   Make some string variables?
 */
 
+/*
+  FIXME: The padding in NewList is annoying. It might be an issue with the layout in general.
+  I have px-1 on a div surrounding the h1 in NewList and I have px-1 on a div surrounding
+  <NewListForm> and <ItemList>. The reason for this is to keep them in line with one another in the layout.
+  I need to set some type of padding on the div surrounding <NewListForm> and <ItemList> because
+  overflow: hidden on the surrounding div is clipping the input highlight and it looks bad.
+  This padding is a short term fix but I am not very happy with it. We need to play around with 
+  the overflow settings more and figure out how to make <ItemList> scrollable.
+*/
+
 interface ListItemInputData {
   brand: string;
   name: string;
@@ -65,10 +75,12 @@ export default function NewList() {
 
   return (
     <div className='h-full grid grid-rows-[auto_1fr_auto] gap-3'>
-      <h1 className='text-xl font-bold border-b border-b-slate-700/75'>
-        Create a new list
-      </h1>
-      <div className='grid grid-rows-[auto_1fr] gap-3 overflow-hidden'>
+      <div className='px-1'>
+        <h1 className='text-xl font-bold border-b border-b-slate-700/75'>
+          Create a new list
+        </h1>
+      </div>
+      <div className='grid grid-rows-[auto_1fr] gap-3 overflow-hidden px-1'>
         <NewListForm setList={setList} />
         <ItemList>{itemList}</ItemList>
       </div>

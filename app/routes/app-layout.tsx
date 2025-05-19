@@ -10,7 +10,7 @@ export default function AppLayout() {
           <UserRound />
         </div>
       </div>
-      <div className='p-4 overflow-auto'>
+      <div className='p-3 overflow-auto'>
         <Outlet />
       </div>
       <BottomNavBar>
