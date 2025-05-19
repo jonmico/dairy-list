@@ -1,16 +1,16 @@
-import { House, Link, ListChecksIcon, User } from 'lucide-react';
+import { House, ListChecksIcon, UserRound } from 'lucide-react';
 import { NavLink, Outlet } from 'react-router';
 
 export default function AppLayout() {
   return (
-    <div className='h-screen grid grid-rows-[3.5rem_1fr_4rem]'>
-      <div className='border-b border-b-slate-700/75 p-2 flex justify-between items-center'>
-        <div className='text-lg font-bold'>DairyList</div>
+    <div className='h-screen grid grid-rows-[auto_1fr_auto]'>
+      <div className='border-b border-b-slate-700/75 p-3 flex justify-between items-center'>
+        <div className='text-xl font-bold'>DairyList</div>
         <div>
-          <User />
+          <UserRound />
         </div>
       </div>
-      <div className='p-4'>
+      <div className='p-4 overflow-hidden'>
         <Outlet />
       </div>
       <BottomNavBar>
@@ -22,10 +22,6 @@ export default function AppLayout() {
           <House size={22} />
           <div className='text-sm'>Home</div>
         </NavItem>
-        <div>
-          <Link size={22} />
-          <div className='text-sm'>Some Link</div>
-        </div>
       </BottomNavBar>
     </div>
   );
@@ -37,8 +33,8 @@ interface BottomNavBarProps {
 
 function BottomNavBar(props: BottomNavBarProps) {
   return (
-    <nav className='flex'>
-      <ul className='border-t border-t-slate-700/75 flex justify-between items-center px-5 w-full'>
+    <nav>
+      <ul className='border-t border-t-slate-700/75 flex justify-around items-center p-2 w-full'>
         {props.children}
       </ul>
     </nav>

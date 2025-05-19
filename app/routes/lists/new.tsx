@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { redirect, useFetcher } from 'react-router';
 import type { Route } from './+types/new';
 import { createList } from '../../.server/api/list';
+import { Trash2 } from 'lucide-react';
 
 // TODO: Does date input work on mobile?
 // TODO: Validation for 5 digits in SKU, styles are not applying
@@ -35,17 +36,17 @@ export default function NewList() {
 
   const itemList = list.map((item) => (
     <li
-      className='flex justify-between items-center'
+      className=' h-30 flex justify-between items-center'
       key={item.sku}
     >
       <div>
         {item.brand} - {item.name}: {item.sku}
       </div>
       <button
-        className='px-3 py-1 border rounded border-slate-700 hover:text-slate-300 transition-colors delay-150 ease-in-out'
+        className='p-1  hover:text-slate-300 transition-colors delay-150 ease-in-out'
         onClick={() => handleRemoveItem(item.sku)}
       >
-        Remove
+        <Trash2 />
       </button>
     </li>
   ));
@@ -63,22 +64,32 @@ export default function NewList() {
   }
 
   return (
-    <div className='flex flex-col gap-3'>
+    <div className='h-full grid grid-rows-[auto_1fr_auto] gap-3'>
       <h1 className='text-xl font-bold border-b border-b-slate-700/75'>
         Create a new list
       </h1>
-      <NewListForm setList={setList} />
-      <ItemList>{itemList}</ItemList>
-      {list.length > 0 && (
-        <fetcher.Form onSubmit={handleSaveList}>
-          <button className='border rounded bg-blue-700 border-slate-700 py-1 px-4'>
-            Save List
-          </button>
-        </fetcher.Form>
-      )}
+      <div className='grid grid-rows-[auto_1fr] gap-3 min-h-0'>
+        <NewListForm setList={setList} />
+        <ItemList>{itemList}</ItemList>
+      </div>
+      <div>
+        {list.length > 0 && (
+          <fetcher.Form onSubmit={handleSaveList}>
+            <button className='w-full border rounded bg-blue-700 border-slate-700 py-1 px-4'>
+              Save List
+            </button>
+          </fetcher.Form>
+        )}
+      </div>
     </div>
   );
 }
+
+interface ListItemProps {
+  item: ListItemInputData;
+}
+
+function ListItem() {}
 
 interface NewListFormProps {
   setList: React.Dispatch<React.SetStateAction<ListItemInputData[]>>;
@@ -192,5 +203,9 @@ interface ItemListProps {
 }
 
 function ItemList(props: ItemListProps) {
-  return <ul className='flex flex-col gap-1'>{props.children}</ul>;
+  return (
+    <div className='overflow-y-auto'>
+      <ul className='flex flex-col gap-1'>{props.children}</ul>
+    </div>
+  );
 }
