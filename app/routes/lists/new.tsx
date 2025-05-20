@@ -45,20 +45,10 @@ export default function NewList() {
   const [list, setList] = useState<ListItemInputData[]>([]);
 
   const itemList = list.map((item) => (
-    <li
-      className=' h-30 flex justify-between items-center'
-      key={item.sku}
-    >
-      <div>
-        {item.brand} - {item.name}: {item.sku}
-      </div>
-      <button
-        className='p-1  hover:text-slate-300 transition-colors delay-150 ease-in-out'
-        onClick={() => handleRemoveItem(item.sku)}
-      >
-        <Trash2 />
-      </button>
-    </li>
+    <ListItem
+      item={item}
+      removeItem={() => handleRemoveItem(item.sku)}
+    />
   ));
 
   function handleRemoveItem(sku: number) {
@@ -87,7 +77,7 @@ export default function NewList() {
       <div>
         {list.length > 0 && (
           <fetcher.Form onSubmit={handleSaveList}>
-            <button className='w-full border rounded bg-blue-700 border-slate-700 py-1 px-4'>
+            <button className='w-full border rounded bg-green-800 border-slate-700 py-1.5 px-4'>
               Save List
             </button>
           </fetcher.Form>
@@ -99,9 +89,32 @@ export default function NewList() {
 
 interface ListItemProps {
   item: ListItemInputData;
+  removeItem: () => void;
 }
 
-function ListItem() {}
+function ListItem(props: ListItemProps) {
+  let { item } = props;
+
+  return (
+    <li
+      className='flex justify-between items-center bg-slate-900/75 rounded p-3'
+      key={item.sku}
+    >
+      <div>
+        {item.brand} - {item.name}: {item.sku}
+      </div>
+      <button
+        className='p-1  hover:text-slate-300 transition-colors delay-150 ease-in-out'
+        onClick={props.removeItem}
+      >
+        <Trash2
+          size={22}
+          className='text-slate-500 hover:text-slate-300 transition-colors ease-in-out delay-100'
+        />
+      </button>
+    </li>
+  );
+}
 
 interface NewListFormProps {
   setList: React.Dispatch<React.SetStateAction<ListItemInputData[]>>;
@@ -217,7 +230,7 @@ interface ItemListProps {
 function ItemList(props: ItemListProps) {
   return (
     <div className='overflow-auto'>
-      <ul className='flex flex-col gap-1'>{props.children}</ul>
+      <ul className='flex flex-col gap-2'>{props.children}</ul>
     </div>
   );
 }
