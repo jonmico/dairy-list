@@ -1,9 +1,10 @@
+import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { redirect, useFetcher } from 'react-router';
-import type { Route } from './+types/new';
-import { createList } from '../../.server/services/list';
-import { Trash2 } from 'lucide-react';
+import PageHeader from '~/components/page-header';
+import type { Route } from './+types/add-items';
+import { addItems } from '~/.server/services/list';
 
 // TODO: Does date input work on mobile?
 // TODO: Validation for 5 digits in SKU, styles are not applying
@@ -29,23 +30,24 @@ interface ListItemInputData {
   expirationDate: string;
 }
 
-export async function action({ request }: Route.ActionArgs) {
-  const formData = await request.formData();
-  const list = formData.get('list') as string;
+export async function action({ request, params }: Route.ActionArgs) {
+  let formData = await request.formData();
+  let list = formData.get('list') as string;
 
-  const parsedList = JSON.parse(list) as ListItemInputData[];
+  let parsedList = JSON.parse(list) as ListItemInputData[];
 
-  const result = await createList(parsedList, 'test name');
+  let data = await addItems(params.id, parsedList);
 
-  throw redirect(`/lists/${result.newList.id}`);
+  throw redirect(`/lists/${data.updatedList.id}`);
 }
 
-export default function NewList() {
+export default function AddItems() {
   const fetcher = useFetcher();
   const [list, setList] = useState<ListItemInputData[]>([]);
 
   const itemList = list.map((item) => (
     <ListItem
+      key={item.sku}
       item={item}
       removeItem={() => handleRemoveItem(item.sku)}
     />
@@ -66,9 +68,7 @@ export default function NewList() {
   return (
     <div className='h-full grid grid-rows-[auto_1fr_auto] gap-3'>
       <div className='px-1'>
-        <h1 className='text-xl font-bold border-b border-b-slate-700/75'>
-          Create a new list
-        </h1>
+        <PageHeader>Add items to list</PageHeader>
       </div>
       <div className='grid grid-rows-[auto_1fr] gap-3 overflow-hidden px-1'>
         <NewListForm setList={setList} />
@@ -78,7 +78,7 @@ export default function NewList() {
         {list.length > 0 && (
           <fetcher.Form onSubmit={handleSaveList}>
             <button className='w-full border rounded bg-green-800 border-slate-700 py-1.5 px-4'>
-              Save List
+              Save
             </button>
           </fetcher.Form>
         )}
@@ -96,10 +96,7 @@ function ListItem(props: ListItemProps) {
   let { item } = props;
 
   return (
-    <li
-      className='flex justify-between items-center bg-slate-900/75 rounded p-3'
-      key={item.sku}
-    >
+    <li className='flex justify-between items-center bg-slate-900/75 rounded p-3'>
       <div>
         {item.brand} - {item.name}: {item.sku}
       </div>

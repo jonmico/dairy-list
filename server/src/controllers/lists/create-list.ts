@@ -9,36 +9,9 @@ export async function createList(
   next: NextFunction
 ) {
   try {
-    let {
-      listName,
-      list,
-    }: {
-      listName: string;
-      list: {
-        brand: string;
-        name: string;
-        sku: number;
-        expirationDate: string;
-      }[];
-    } = req.body;
+    let { listName } = req.body;
 
-    let newList = await db.dairyList.create({
-      data: {
-        name: listName,
-        items: {
-          createMany: {
-            data: list.map((item) => {
-              return {
-                name: item.name,
-                sku: Number(item.sku),
-                expirationDate: new Date(item.expirationDate),
-                brand: item.brand,
-              };
-            }),
-          },
-        },
-      },
-    });
+    let newList = await db.dairyList.create({ data: { name: listName } });
 
     res.status(201).json({ newList });
   } catch (err) {

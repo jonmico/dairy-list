@@ -1,3 +1,5 @@
+const URL = import.meta.env.VITE_BASE_URL;
+
 interface ListItemInputData {
   brand: string;
   name: string;
@@ -5,11 +7,11 @@ interface ListItemInputData {
   expirationDate: string;
 }
 
-export async function createList(list: ListItemInputData[], listName: string) {
-  const res = await fetch('http://localhost:3000/api/lists/create', {
+export async function createList(listName: string) {
+  const res = await fetch(`${URL}/lists/create`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ list, listName }),
+    body: JSON.stringify({ listName }),
   });
 
   const data: { newList: { id: string; createdAt: string; name: string } } =

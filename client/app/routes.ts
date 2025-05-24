@@ -12,8 +12,9 @@ export default [
 
     ...prefix('lists', [
       index('./routes/lists/home.tsx'),
-      route('new', './routes/lists/new.tsx'),
+      route('create', './routes/lists/create-list.tsx'),
       route(':id', './routes/lists/list.tsx'),
+      route(':id/add-items', './routes/lists/add-items.tsx'),
     ]),
   ]),
 ] satisfies RouteConfig;
