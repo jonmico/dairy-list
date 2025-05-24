@@ -1,21 +1,22 @@
 import { ListPlus } from 'lucide-react';
 import { Link } from 'react-router';
 import type { Route } from './+types/home';
+import { getLists } from '~/.server/services/list';
 
-// export async function loader() {
-//   let lists = await getLists();
+export async function loader() {
+  let data = await getLists();
 
-//   return { lists };
-// }
+  return { lists: data.lists };
+}
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  // let list = loaderData.lists.map((list) => {
-  //   return (
-  //     <li key={list.id}>
-  //       <Link to={`${list.id}`}>{list.name}</Link>
-  //     </li>
-  //   );
-  // });
+  let list = loaderData.lists.map((list) => {
+    return (
+      <li key={list.id}>
+        <Link to={`${list.id}`}>{list.name}</Link>
+      </li>
+    );
+  });
 
   return (
     <div className='flex flex-col'>
@@ -27,7 +28,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           <ListPlus />
         </Link>
       </div>
-      {/* <ul>{list}</ul> */}
+      <ul>{list}</ul>
     </div>
   );
 }

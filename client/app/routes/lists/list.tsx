@@ -2,16 +2,16 @@ import { getList } from '~/.server/services/list';
 import type { Route } from './+types/list';
 
 export async function loader({ params }: Route.LoaderArgs) {
-  let list = await getList(params.id);
+  let data = await getList(params.id);
 
-  if (!list) {
+  if (!data.list) {
     throw new Response(null, {
       status: 404,
       statusText: 'Not found',
     });
   }
 
-  return { list };
+  return { list: data.list };
 }
 
 export default function List({ loaderData }: Route.ComponentProps) {
@@ -22,7 +22,7 @@ export default function List({ loaderData }: Route.ComponentProps) {
           {item.brand} - {item.name}
         </div>
         <div>
-          {item.sku} - {item.expirationDate.toDateString()}
+          {item.sku} - {new Date(item.expirationDate).toDateString()}
         </div>
       </li>
     );

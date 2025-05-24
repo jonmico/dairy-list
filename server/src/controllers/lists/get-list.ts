@@ -3,13 +3,11 @@ import { db } from '../../db/db';
 
 export async function getList(req: Request, res: Response, next: NextFunction) {
   try {
-    const { listId } = req.params;
-
-    console.log('This is the getList controller.');
+    const { id } = req.params;
 
     let list = await db.dairyList.findUnique({
       where: {
-        id: listId,
+        id: id,
       },
       include: {
         items: {
@@ -19,6 +17,11 @@ export async function getList(req: Request, res: Response, next: NextFunction) {
         },
       },
     });
+
+    if (!list) {
+      res.status(404).json({ error: 'List not found.' });
+      return;
+    }
 
     res.json({ list });
     return;

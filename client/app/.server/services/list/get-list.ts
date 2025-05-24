@@ -1,16 +1,29 @@
+const URL = import.meta.env.VITE_BASE_URL;
+
 export async function getList(listId: string) {
-  let list = await db.dairyList.findUnique({
-    where: {
-      id: listId,
-    },
-    include: {
-      items: {
-        orderBy: {
-          expirationDate: 'asc',
-        },
-      },
+  let res = await fetch(`${URL}/lists/${listId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
     },
   });
 
-  return list;
+  let data: {
+    list: {
+      id: string;
+      createdAt: string;
+      name: string;
+      items: {
+        id: string;
+        createdAt: string;
+        name: string;
+        expirationDate: string;
+        brand: string;
+        sku: number;
+        dairyListId: string;
+      }[];
+    };
+  } = await res.json();
+
+  return data;
 }
