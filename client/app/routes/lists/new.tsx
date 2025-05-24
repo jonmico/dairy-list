@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { redirect, useFetcher } from 'react-router';
 import type { Route } from './+types/new';
-import { createList } from '../../.server/api/list';
+import { createList } from '../../.server/services/list';
 import { Trash2 } from 'lucide-react';
 
 // TODO: Does date input work on mobile?
@@ -35,9 +35,9 @@ export async function action({ request }: Route.ActionArgs) {
 
   const parsedList = JSON.parse(list) as ListItemInputData[];
 
-  const newList = await createList(parsedList, 'test name');
+  const result = await createList(parsedList, 'test name');
 
-  throw redirect(`/lists/${newList.id}`);
+  throw redirect(`/lists/${result.newList.id}`);
 }
 
 export default function NewList() {

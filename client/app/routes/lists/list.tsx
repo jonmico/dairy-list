@@ -1,4 +1,4 @@
-import { getList } from '~/.server/api/list';
+import { getList } from '~/.server/services/list';
 import type { Route } from './+types/list';
 
 export async function loader({ params }: Route.LoaderArgs) {
