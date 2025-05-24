@@ -1,7 +1,8 @@
 .DS_Store
+.env
 /node_modules/
 /app/generated/
-.env
+
 
 # React Router
 /.react-router/
