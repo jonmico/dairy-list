@@ -8,7 +8,7 @@ interface ListItemInputData {
 }
 
 export async function addItems(listId: string, list: ListItemInputData[]) {
-  let res = await fetch(`${URL}/lists/${listId}/items`, {
+  const res = await fetch(`${URL}/lists/${listId}/items`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -16,7 +16,7 @@ export async function addItems(listId: string, list: ListItemInputData[]) {
     body: JSON.stringify({ list }),
   });
 
-  let data: { updatedList: { id: string; createdAt: Date; name: string } } =
+  const data: { updatedList: { id: string; createdAt: Date; name: string } } =
     await res.json();
 
   return data;

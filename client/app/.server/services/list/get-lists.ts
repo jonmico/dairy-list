@@ -1,14 +1,14 @@
 const URL = import.meta.env.VITE_BASE_URL;
 
 export async function getLists() {
-  let res = await fetch(`${URL}/lists`, {
+  const res = await fetch(`${URL}/lists`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   });
 
-  let data: {
+  const data: {
     lists: {
       id: string;
       createdAt: Date;

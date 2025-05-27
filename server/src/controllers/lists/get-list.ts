@@ -5,7 +5,7 @@ export async function getList(req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = req.params;
 
-    let list = await db.dairyList.findUnique({
+    const list = await db.dairyList.findUnique({
       where: {
         id: id,
       },

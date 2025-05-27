@@ -7,7 +7,7 @@ export async function getLists(
   next: NextFunction
 ) {
   try {
-    let lists = await db.dairyList.findMany({
+    const lists = await db.dairyList.findMany({
       orderBy: { createdAt: 'desc' },
     });
 

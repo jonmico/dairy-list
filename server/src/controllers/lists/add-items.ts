@@ -7,8 +7,8 @@ export async function addItems(
   next: NextFunction
 ) {
   try {
-    let { id } = req.params;
-    let {
+    const { id } = req.params;
+    const {
       list,
     }: {
       list: {
@@ -19,7 +19,7 @@ export async function addItems(
       }[];
     } = req.body;
 
-    let updatedList = await db.dairyList.update({
+    const updatedList = await db.dairyList.update({
       where: { id },
       data: {
         items: {

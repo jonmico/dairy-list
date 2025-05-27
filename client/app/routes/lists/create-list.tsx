@@ -8,9 +8,9 @@ interface Errors {
 }
 
 export async function action({ request }: Route.ActionArgs) {
-  let formData = await request.formData();
-  let listName = formData.get('listName') as string;
-  let errors: Errors = {};
+  const formData = await request.formData();
+  const listName = formData.get('listName') as string;
+  const errors: Errors = {};
 
   if (typeof listName !== 'string' || !listName) {
     errors.listName = 'Required';
@@ -20,13 +20,13 @@ export async function action({ request }: Route.ActionArgs) {
     return { errors };
   }
 
-  let { newList } = await createList(listName);
+  const { newList } = await createList(listName);
 
   throw redirect(`/lists/${newList.id}/add-items`);
 }
 
 export default function CreateList({ actionData }: Route.ComponentProps) {
-  let errors = actionData?.errors;
+  const errors = actionData?.errors;
 
   return (
     <div className='flex flex-col gap-3'>

@@ -2,10 +2,10 @@ import { getList } from '~/.server/services/list';
 import type { Route } from './+types/list';
 import PageHeader from '~/components/page-header';
 import { ClipboardEdit, EllipsisVertical, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export async function loader({ params }: Route.LoaderArgs) {
-  let data = await getList(params.id);
+  const data = await getList(params.id);
 
   if (!data.list) {
     throw new Response(null, {
@@ -18,10 +18,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 }
 
 export default function List({ loaderData }: Route.ComponentProps) {
-  const [isPopOverOpen, setIsPopOverOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-
-  let list = loaderData.list.items.map((item) => {
+  const list = loaderData.list.items.map((item) => {
     return (
       <li key={item.id}>
         <div>
@@ -47,9 +44,37 @@ export default function List({ loaderData }: Route.ComponentProps) {
   );
 }
 
+// TODO: Figure out how to make this a reusable component.
+
 function PopOverMenu() {
   const [isPopOverOpen, setIsPopOverOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target;
+
+      if (!target || !(target instanceof Element)) return;
+
+      if (
+        popoverRef.current &&
+        !popoverRef.current.contains(target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(target)
+      ) {
+        setIsVisible(false);
+        setTimeout(() => setIsPopOverOpen(false), 150);
+      }
+    }
+
+    if (isPopOverOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isPopOverOpen]);
 
   function handlePopOver() {
     if (!isPopOverOpen) {
@@ -63,21 +88,31 @@ function PopOverMenu() {
 
   return (
     <div className='relative flex items-center'>
-      <button onClick={handlePopOver}>
+      <button
+        ref={buttonRef}
+        onClick={handlePopOver}
+      >
         <EllipsisVertical />
       </button>
-      {isPopOverOpen && <Popover isVisible={isVisible} />}
+      {isPopOverOpen && (
+        <Popover
+          ref={popoverRef}
+          isVisible={isVisible}
+        />
+      )}
     </div>
   );
 }
 
 interface PopoverProps {
   isVisible: boolean;
+  ref: React.Ref<HTMLDivElement>;
 }
 
 function Popover(props: PopoverProps) {
   return (
     <div
+      ref={props.ref}
       className={`absolute top-full right-0 z-50 bg-slate-900 border rounded border-slate-700 p-2 min-w-[150px] transition-all duration-150 ease-out ${
         props.isVisible
           ? 'opacity-100 scale-100 translate-y-0'

@@ -31,12 +31,12 @@ interface ListItemInputData {
 }
 
 export async function action({ request, params }: Route.ActionArgs) {
-  let formData = await request.formData();
-  let list = formData.get('list') as string;
+  const formData = await request.formData();
+  const list = formData.get('list') as string;
 
-  let parsedList = JSON.parse(list) as ListItemInputData[];
+  const parsedList = JSON.parse(list) as ListItemInputData[];
 
-  let data = await addItems(params.id, parsedList);
+  const data = await addItems(params.id, parsedList);
 
   throw redirect(`/lists/${data.updatedList.id}`);
 }
@@ -93,7 +93,7 @@ interface ListItemProps {
 }
 
 function ListItem(props: ListItemProps) {
-  let { item } = props;
+  const { item } = props;
 
   return (
     <li className='flex justify-between items-center bg-slate-900/75 rounded p-3'>

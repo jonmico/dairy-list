@@ -4,13 +4,13 @@ import type { Route } from './+types/home';
 import { getLists } from '~/.server/services/list';
 
 export async function loader() {
-  let data = await getLists();
+  const data = await getLists();
 
   return { lists: data.lists };
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  let list = loaderData.lists.map((list) => {
+  const list = loaderData.lists.map((list) => {
     return (
       <li key={list.id}>
         <Link to={`${list.id}`}>{list.name}</Link>

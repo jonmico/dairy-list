@@ -9,9 +9,9 @@ export async function createList(
   next: NextFunction
 ) {
   try {
-    let { listName } = req.body;
+    const { listName } = req.body;
 
-    let newList = await db.dairyList.create({ data: { name: listName } });
+    const newList = await db.dairyList.create({ data: { name: listName } });
 
     res.status(201).json({ newList });
   } catch (err) {
