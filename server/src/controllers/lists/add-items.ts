@@ -19,6 +19,7 @@ export async function addItems(
       }[];
     } = req.body;
 
+    // FIXME: Add T12:00:00.000Z to force UTC at noon. This fixes date display issues since UTC noon works everywhere.
     const updatedList = await db.dairyList.update({
       where: { id },
       data: {
@@ -28,7 +29,9 @@ export async function addItems(
               return {
                 name: item.name,
                 brand: item.brand,
-                expirationDate: new Date(item.expirationDate),
+                expirationDate: new Date(
+                  `${item.expirationDate}T12:00:00.000Z`
+                ),
                 sku: Number(item.sku),
               };
             }),

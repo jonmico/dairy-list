@@ -1,8 +1,7 @@
-import { getList } from '~/.server/services/list';
-import type { Route } from './+types/list';
-import PageHeader from '~/components/page-header';
 import { ClipboardEdit, EllipsisVertical, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { getList } from '~/.server/services/list';
+import type { Route } from './+types/list';
 
 export async function loader({ params }: Route.LoaderArgs) {
   const data = await getList(params.id);
@@ -19,13 +18,15 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export default function List({ loaderData }: Route.ComponentProps) {
   const list = loaderData.list.items.map((item) => {
+    const date = new Date(item.expirationDate);
+
     return (
       <li key={item.id}>
         <div>
           {item.brand} - {item.name}
         </div>
         <div>
-          {item.sku} - {new Date(item.expirationDate).toDateString()}
+          {item.sku} - {date.toLocaleDateString()}
         </div>
       </li>
     );
