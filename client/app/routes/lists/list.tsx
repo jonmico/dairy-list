@@ -18,17 +18,11 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export default function List({ loaderData }: Route.ComponentProps) {
   const list = loaderData.list.items.map((item) => {
-    const date = new Date(item.expirationDate);
-
     return (
-      <li key={item.id}>
-        <div>
-          {item.brand} - {item.name}
-        </div>
-        <div>
-          {item.sku} - {date.toLocaleDateString()}
-        </div>
-      </li>
+      <ListItem
+        key={item.sku}
+        item={item}
+      />
     );
   });
 
@@ -45,8 +39,38 @@ export default function List({ loaderData }: Route.ComponentProps) {
   );
 }
 
-// TODO: Figure out how to make this a reusable component.
+interface ListItemProps {
+  item: {
+    id: string;
+    createdAt: string;
+    name: string;
+    expirationDate: string;
+    brand: string;
+    sku: number;
+    dairyListId: string;
+  };
+}
 
+// TODO: How do I want to make this checkbox work?
+function ListItem(props: ListItemProps) {
+  const date = new Date(props.item.expirationDate);
+
+  const skuString = String(props.item.sku);
+
+  return (
+    <li className='flex'>
+      <div>
+        <input
+          id={skuString}
+          type='checkbox'
+        />
+        <label htmlFor={skuString}>Test label</label>
+      </div>
+    </li>
+  );
+}
+
+// TODO: Figure out how to make this a reusable component.
 function PopOverMenu() {
   const [isPopOverOpen, setIsPopOverOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
