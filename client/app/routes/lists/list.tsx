@@ -16,14 +16,53 @@ export async function loader({ params }: Route.LoaderArgs) {
   return { list: data.list };
 }
 
+interface Item {
+  id: string;
+  createdAt: string;
+  name: string;
+  expirationDate: string;
+  brand: string;
+  sku: number;
+  dairyListId: string;
+}
+
 export default function List({ loaderData }: Route.ComponentProps) {
-  const list = loaderData.list.items.map((item) => {
+  const [checkedList, setCheckedList] = useState<Item[] | null>(null);
+  const [list, setList] = useState(loaderData.list.items);
+
+  function handleAddToCheckedList(id: string) {
+    setCheckedList((prevCheckedList) => {
+      if (!prevCheckedList) {
+        return [...list.filter((item) => item.id === id)];
+      }
+
+      return [
+        ...prevCheckedList,
+        ...list.filter((item) => {
+          return item.id === id;
+        }),
+      ];
+    });
+
+    setList((prevList) => {
+      return [...prevList.filter((item) => item.id !== id)];
+    });
+  }
+
+  function handleRemoveFromCheckedList() {}
+
+  const renderedList = list.map((item) => {
     return (
       <ListItem
+        handleCheckItem={() => handleAddToCheckedList(item.id)}
         key={item.sku}
         item={item}
       />
     );
+  });
+
+  const renderedCheckedList = checkedList?.map((item) => {
+    return <div>{item.name}</div>;
   });
 
   return (
@@ -34,7 +73,8 @@ export default function List({ loaderData }: Route.ComponentProps) {
         </h1>
         <PopOverMenu />
       </div>
-      <ul>{list}</ul>
+      <ul>{renderedList}</ul>
+      {renderedCheckedList && renderedCheckedList}
     </div>
   );
 }
@@ -49,18 +89,27 @@ interface ListItemProps {
     sku: number;
     dairyListId: string;
   };
+  handleCheckItem: () => void;
 }
 
 // TODO: How do I want to make this checkbox work?
 function ListItem(props: ListItemProps) {
   const date = new Date(props.item.expirationDate);
+  const [isChecked, setIsChecked] = useState(false);
 
   const skuString = String(props.item.sku);
+
+  function handleCheck(evt: React.ChangeEvent<HTMLInputElement>) {
+    setIsChecked(evt.target.checked);
+    props.handleCheckItem();
+  }
 
   return (
     <li className='flex'>
       <div>
         <input
+          onChange={handleCheck}
+          checked={isChecked}
           id={skuString}
           type='checkbox'
         />
