@@ -113,7 +113,9 @@ function ListItem(props: ListItemProps) {
           id={skuString}
           type='checkbox'
         />
-        <label htmlFor={skuString}>Test label</label>
+        <label htmlFor={skuString}>
+          {props.item.name} - {props.item.brand} - {props.item.expirationDate}
+        </label>
       </div>
     </li>
   );

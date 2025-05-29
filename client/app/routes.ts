@@ -9,7 +9,6 @@ import {
 export default [
   layout('./routes/app-layout.tsx', [
     index('routes/home.tsx'),
-
     ...prefix('lists', [
       index('./routes/lists/home.tsx'),
       route('create', './routes/lists/create-list.tsx'),
