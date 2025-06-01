@@ -27,29 +27,26 @@ interface Item {
 }
 
 export default function List({ loaderData }: Route.ComponentProps) {
-  const [checkedList, setCheckedList] = useState<Item[] | null>(null);
+  const [checkedList, setCheckedList] = useState<Item[]>([]);
   const [list, setList] = useState(loaderData.list.items);
 
   function handleAddToCheckedList(id: string) {
-    setCheckedList((prevCheckedList) => {
-      if (!prevCheckedList) {
-        return [...list.filter((item) => item.id === id)];
-      }
-
-      return [
-        ...prevCheckedList,
-        ...list.filter((item) => {
-          return item.id === id;
-        }),
-      ];
-    });
-
-    setList((prevList) => {
-      return [...prevList.filter((item) => item.id !== id)];
-    });
+    setCheckedList((prevCheckedList) => [
+      ...prevCheckedList,
+      ...list.filter((item) => item.id === id),
+    ]);
+    setList((prevList) => prevList.filter((item) => item.id !== id));
   }
 
-  function handleRemoveFromCheckedList() {}
+  function handleRemoveFromCheckedList(id: string) {
+    setList((prevList) => [
+      ...prevList,
+      ...checkedList.filter((item) => item.id === id),
+    ]);
+    setCheckedList((prevCheckedList) =>
+      prevCheckedList.filter((item) => item.id !== id)
+    );
+  }
 
   const renderedList = list.map((item) => {
     return (
@@ -62,7 +59,13 @@ export default function List({ loaderData }: Route.ComponentProps) {
   });
 
   const renderedCheckedList = checkedList?.map((item) => {
-    return <div>{item.name}</div>;
+    return (
+      <ListItem
+        handleCheckItem={() => handleRemoveFromCheckedList(item.id)}
+        item={item}
+        key={item.sku}
+      />
+    );
   });
 
   return (
@@ -73,8 +76,16 @@ export default function List({ loaderData }: Route.ComponentProps) {
         </h1>
         <PopOverMenu />
       </div>
-      <ul>{renderedList}</ul>
-      {renderedCheckedList && renderedCheckedList}
+      <div>
+        <h2>This is the renderedList</h2>
+        <ul>{renderedList}</ul>
+      </div>
+      {renderedCheckedList.length > 0 && (
+        <div>
+          <h2>This is the renderedCheckList</h2>
+          <ul>{renderedCheckedList}</ul>
+        </div>
+      )}
     </div>
   );
 }
