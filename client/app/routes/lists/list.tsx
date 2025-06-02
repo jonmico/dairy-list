@@ -60,7 +60,7 @@ export default function List({ loaderData }: Route.ComponentProps) {
 
   const renderedCheckedList = checkedList?.map((item) => {
     return (
-      <ListItem
+      <CheckedListItem
         handleCheckItem={() => handleRemoveFromCheckedList(item.id)}
         item={item}
         key={item.sku}
@@ -103,36 +103,64 @@ interface ListItemProps {
   handleCheckItem: () => void;
 }
 
-// TODO: How do I want to make this checkbox work?
 function ListItem(props: ListItemProps) {
-  const date = new Date(props.item.expirationDate);
-  const [isChecked, setIsChecked] = useState(false);
-
+  const date = new Date(props.item.expirationDate).toLocaleDateString();
   const skuString = String(props.item.sku);
 
-  function handleCheck(evt: React.ChangeEvent<HTMLInputElement>) {
-    setIsChecked(evt.target.checked);
-    props.handleCheckItem();
-  }
-
   return (
-    <li className='flex'>
-      <div>
-        <input
-          onChange={handleCheck}
-          checked={isChecked}
-          id={skuString}
-          type='checkbox'
-        />
-        <label htmlFor={skuString}>
-          {props.item.name} - {props.item.brand} - {props.item.expirationDate}
-        </label>
-      </div>
+    <li className='flex gap-3 items-center'>
+      <input
+        onChange={props.handleCheckItem}
+        id={skuString}
+        type='checkbox'
+      />
+      <label htmlFor={skuString}>
+        {props.item.name} - {props.item.brand} - {date}
+      </label>
     </li>
   );
 }
 
-// TODO: Figure out how to make this a reusable component.
+interface CheckedListItemProps {
+  item: {
+    id: string;
+    createdAt: string;
+    name: string;
+    expirationDate: string;
+    brand: string;
+    sku: number;
+    dairyListId: string;
+  };
+  handleCheckItem: () => void;
+}
+
+interface CheckedListProps {
+  checkedList: Item[];
+  handleRemoveItem: (id: string) => void;
+}
+
+function CheckedList(props: CheckedListProps) {}
+
+function CheckedListItem(props: CheckedListItemProps) {
+  const date = new Date(props.item.expirationDate).toLocaleDateString();
+  const skuString = String(props.item.sku);
+
+  return (
+    <li className='flex gap-3 text-gray-500/75 items-center'>
+      <input
+        onChange={props.handleCheckItem}
+        id={skuString}
+        type='checkbox'
+        checked={true}
+      />
+      <label htmlFor={skuString}>
+        {props.item.name} - {props.item.brand} - {date}
+      </label>
+    </li>
+  );
+}
+
+// TODO: Figure out how to make this a reusable component. Break into separate file.
 function PopOverMenu() {
   const [isPopOverOpen, setIsPopOverOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
