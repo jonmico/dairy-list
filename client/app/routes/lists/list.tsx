@@ -1,4 +1,10 @@
-import { ClipboardEdit, EllipsisVertical, Trash2 } from 'lucide-react';
+import {
+  ArrowDown,
+  ArrowUp,
+  ClipboardEdit,
+  EllipsisVertical,
+  Trash2,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { getList } from '~/.server/services/list';
 import type { Route } from './+types/list';
@@ -58,18 +64,8 @@ export default function List({ loaderData }: Route.ComponentProps) {
     );
   });
 
-  const renderedCheckedList = checkedList?.map((item) => {
-    return (
-      <CheckedListItem
-        handleCheckItem={() => handleRemoveFromCheckedList(item.id)}
-        item={item}
-        key={item.sku}
-      />
-    );
-  });
-
   return (
-    <div>
+    <div className='h-full grid grid-rows-[auto_1fr_auto]'>
       <div className='flex justify-between items-center gap-3'>
         <h1 className='text-xl font-bold border-b border-b-slate-700/75 w-full'>
           {loaderData.list.name}
@@ -77,15 +73,17 @@ export default function List({ loaderData }: Route.ComponentProps) {
         <PopOverMenu />
       </div>
       <div>
-        <h2>This is the renderedList</h2>
-        <ul>{renderedList}</ul>
-      </div>
-      {renderedCheckedList.length > 0 && (
         <div>
-          <h2>This is the renderedCheckList</h2>
-          <ul>{renderedCheckedList}</ul>
+          <h2>This is the renderedList</h2>
+          <ul className='overflow-scroll'>{renderedList}</ul>
         </div>
-      )}
+      </div>
+      {checkedList.length ? (
+        <CheckedList
+          checkedList={checkedList}
+          handleRemoveItem={handleRemoveFromCheckedList}
+        />
+      ) : null}
     </div>
   );
 }
@@ -121,6 +119,53 @@ function ListItem(props: ListItemProps) {
   );
 }
 
+interface CheckedListProps {
+  checkedList: Item[];
+  handleRemoveItem: (id: string) => void;
+}
+
+function CheckedList(props: CheckedListProps) {
+  const [isListOpen, setIsListOpen] = useState(false);
+
+  if (props.checkedList.length === 0) return null;
+
+  const list = props.checkedList.map((item) => (
+    <CheckedListItem
+      handleCheckItem={() => props.handleRemoveItem(item.id)}
+      item={item}
+      key={item.sku}
+    />
+  ));
+
+  function handleClick() {
+    setIsListOpen((state) => !state);
+  }
+
+  return (
+    <div className='bg-slate-900 rounded-t flex flex-col items-center relative transition-all duration-300 ease-in-out'>
+      <button
+        onClick={handleClick}
+        className='p-1 rounded relative -top-2 bg-indigo-700 shadow shadow-slate-900'
+      >
+        <div
+          className={`transition-transform duration-300 ease-in-out ${
+            isListOpen ? 'rotate-180' : 'rotate-0'
+          }`}
+        >
+          <ArrowUp size={16} />
+        </div>
+      </button>
+      <div
+        className={`w-full transition-all duration-300 ease-in-out overflow-hidden ${
+          isListOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <ul className='w-full'>{list}</ul>
+      </div>
+    </div>
+  );
+}
+
 interface CheckedListItemProps {
   item: {
     id: string;
@@ -133,13 +178,6 @@ interface CheckedListItemProps {
   };
   handleCheckItem: () => void;
 }
-
-interface CheckedListProps {
-  checkedList: Item[];
-  handleRemoveItem: (id: string) => void;
-}
-
-function CheckedList(props: CheckedListProps) {}
 
 function CheckedListItem(props: CheckedListItemProps) {
   const date = new Date(props.item.expirationDate).toLocaleDateString();
