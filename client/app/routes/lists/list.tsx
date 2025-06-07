@@ -32,6 +32,10 @@ interface Item {
   dairyListId: string;
 }
 
+// TODO: The list is not sorted by date when you check and uncheck items. Woof.
+// We could go back to the idea that each check syncs with the backend. That would make it persist through refreshes.
+
+// TODO: Group items by date
 export default function List({ loaderData }: Route.ComponentProps) {
   const [checkedList, setCheckedList] = useState<Item[]>([]);
   const [list, setList] = useState(loaderData.list.items);
@@ -101,6 +105,7 @@ interface ListItemProps {
   handleCheckItem: () => void;
 }
 
+// TODO: When refreshing page, random items are checked and still in the list. Why?
 function ListItem(props: ListItemProps) {
   const date = new Date(props.item.expirationDate).toLocaleDateString();
   const skuString = String(props.item.sku);
@@ -111,6 +116,7 @@ function ListItem(props: ListItemProps) {
         onChange={props.handleCheckItem}
         id={skuString}
         type='checkbox'
+        checked={false}
       />
       <label htmlFor={skuString}>
         {props.item.name} - {props.item.brand} - {date}
