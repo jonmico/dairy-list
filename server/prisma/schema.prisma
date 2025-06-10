@@ -30,4 +30,5 @@ model ListItem {
   createdAt      DateTime  @default(now())
   dairyList      DairyList @relation(fields: [dairyListId], references: [id], onDelete: Cascade)
   dairyListId    String
+  expired        Boolean   @default(false)
 }

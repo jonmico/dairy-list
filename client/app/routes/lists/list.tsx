@@ -1,10 +1,4 @@
-import {
-  ArrowDown,
-  ArrowUp,
-  ClipboardEdit,
-  EllipsisVertical,
-  Trash2,
-} from 'lucide-react';
+import { ArrowUp, ClipboardEdit, EllipsisVertical, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { getList } from '~/.server/services/list';
 import type { Route } from './+types/list';
