@@ -16,46 +16,11 @@ export async function loader({ params }: Route.LoaderArgs) {
   return { list: data.list };
 }
 
-interface Item {
-  id: string;
-  createdAt: string;
-  name: string;
-  expirationDate: string;
-  brand: string;
-  sku: number;
-  dairyListId: string;
-}
-
-// TODO: The list is not sorted by date when you check and uncheck items. Woof.
-// We could go back to the idea that each check syncs with the backend. That would make it persist through refreshes.
-
 // TODO: Group items by date
 export default function List({ loaderData }: Route.ComponentProps) {
-  const [checkedList, setCheckedList] = useState<Item[]>([]);
-  const [list, setList] = useState(loaderData.list.items);
-
-  function handleAddToCheckedList(id: string) {
-    setCheckedList((prevCheckedList) => [
-      ...prevCheckedList,
-      ...list.filter((item) => item.id === id),
-    ]);
-    setList((prevList) => prevList.filter((item) => item.id !== id));
-  }
-
-  function handleRemoveFromCheckedList(id: string) {
-    setList((prevList) => [
-      ...prevList,
-      ...checkedList.filter((item) => item.id === id),
-    ]);
-    setCheckedList((prevCheckedList) =>
-      prevCheckedList.filter((item) => item.id !== id)
-    );
-  }
-
-  const renderedList = list.map((item) => {
+  const renderedList = loaderData.list.items.map((item) => {
     return (
       <ListItem
-        handleCheckItem={() => handleAddToCheckedList(item.id)}
         key={item.sku}
         item={item}
       />
@@ -76,12 +41,6 @@ export default function List({ loaderData }: Route.ComponentProps) {
           <ul className='overflow-scroll'>{renderedList}</ul>
         </div>
       </div>
-      {checkedList.length ? (
-        <CheckedList
-          checkedList={checkedList}
-          handleRemoveItem={handleRemoveFromCheckedList}
-        />
-      ) : null}
     </div>
   );
 }
@@ -96,7 +55,6 @@ interface ListItemProps {
     sku: number;
     dairyListId: string;
   };
-  handleCheckItem: () => void;
 }
 
 // TODO: When refreshing page, random items are checked and still in the list. Why?
@@ -107,89 +65,8 @@ function ListItem(props: ListItemProps) {
   return (
     <li className='flex gap-3 items-center'>
       <input
-        onChange={props.handleCheckItem}
         id={skuString}
         type='checkbox'
-        checked={false}
-      />
-      <label htmlFor={skuString}>
-        {props.item.name} - {props.item.brand} - {date}
-      </label>
-    </li>
-  );
-}
-
-interface CheckedListProps {
-  checkedList: Item[];
-  handleRemoveItem: (id: string) => void;
-}
-
-function CheckedList(props: CheckedListProps) {
-  const [isListOpen, setIsListOpen] = useState(false);
-
-  if (props.checkedList.length === 0) return null;
-
-  const list = props.checkedList.map((item) => (
-    <CheckedListItem
-      handleCheckItem={() => props.handleRemoveItem(item.id)}
-      item={item}
-      key={item.sku}
-    />
-  ));
-
-  function handleClick() {
-    setIsListOpen((state) => !state);
-  }
-
-  return (
-    <div className='bg-slate-900 rounded-t flex flex-col items-center relative transition-all duration-300 ease-in-out'>
-      <button
-        onClick={handleClick}
-        className='p-1 rounded relative -top-2 bg-indigo-700 shadow shadow-slate-900'
-      >
-        <div
-          className={`transition-transform duration-300 ease-in-out ${
-            isListOpen ? 'rotate-180' : 'rotate-0'
-          }`}
-        >
-          <ArrowUp size={16} />
-        </div>
-      </button>
-      <div
-        className={`w-full transition-all duration-300 ease-in-out overflow-hidden ${
-          isListOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-        }`}
-      >
-        <ul className='w-full'>{list}</ul>
-      </div>
-    </div>
-  );
-}
-
-interface CheckedListItemProps {
-  item: {
-    id: string;
-    createdAt: string;
-    name: string;
-    expirationDate: string;
-    brand: string;
-    sku: number;
-    dairyListId: string;
-  };
-  handleCheckItem: () => void;
-}
-
-function CheckedListItem(props: CheckedListItemProps) {
-  const date = new Date(props.item.expirationDate).toLocaleDateString();
-  const skuString = String(props.item.sku);
-
-  return (
-    <li className='flex gap-3 text-gray-500/75 items-center'>
-      <input
-        onChange={props.handleCheckItem}
-        id={skuString}
-        type='checkbox'
-        checked={true}
       />
       <label htmlFor={skuString}>
         {props.item.name} - {props.item.brand} - {date}
