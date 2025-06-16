@@ -1,8 +1,8 @@
-import { ArrowUp, ClipboardEdit, EllipsisVertical, Trash2 } from 'lucide-react';
+import { ClipboardEdit, EllipsisVertical, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { getList } from '~/.server/services/list';
-import type { Route } from './+types/list';
 import type { Item } from '~/types/types';
+import type { Route } from './+types/list';
 
 export async function loader({ params }: Route.LoaderArgs) {
   const data = await getList(params.id);
@@ -38,7 +38,6 @@ export default function List({ loaderData }: Route.ComponentProps) {
       </div>
       <div>
         <div>
-          <h2>This is the renderedList</h2>
           <ul className='overflow-scroll'>{renderedList}</ul>
         </div>
       </div>
@@ -51,13 +50,31 @@ interface ListItemProps {
 }
 
 // TODO: When refreshing page, random items are checked and still in the list. Why?
+
+// TODO: Style checked items.
+// TODO: Add 'Save' button to save checked expired items. Probably need to move state up into list.
 function ListItem(props: ListItemProps) {
   const date = new Date(props.item.expirationDate).toLocaleDateString();
   const skuString = String(props.item.sku);
+  const [isChecked, setIsChecked] = useState(false);
+
+  // FIXME: Does this work?
+  function handleCheck(evt: React.ChangeEvent<HTMLInputElement>) {
+    setIsChecked(evt.target.checked);
+    props.item.expired = evt.target.checked;
+  }
+
+  console.log(props.item);
 
   return (
-    <li className='flex gap-3 items-center'>
+    <li
+      className={`flex gap-3 items-center ${
+        isChecked && 'line-through text-slate-500/65'
+      }`}
+    >
       <input
+        checked={isChecked}
+        onChange={handleCheck}
         id={skuString}
         type='checkbox'
       />
