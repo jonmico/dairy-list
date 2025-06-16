@@ -2,6 +2,7 @@ import { ArrowUp, ClipboardEdit, EllipsisVertical, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { getList } from '~/.server/services/list';
 import type { Route } from './+types/list';
+import type { Item } from '~/types/types';
 
 export async function loader({ params }: Route.LoaderArgs) {
   const data = await getList(params.id);
@@ -46,15 +47,7 @@ export default function List({ loaderData }: Route.ComponentProps) {
 }
 
 interface ListItemProps {
-  item: {
-    id: string;
-    createdAt: string;
-    name: string;
-    expirationDate: string;
-    brand: string;
-    sku: number;
-    dairyListId: string;
-  };
+  item: Item;
 }
 
 // TODO: When refreshing page, random items are checked and still in the list. Why?

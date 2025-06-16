@@ -1,3 +1,5 @@
+import type { Item } from '~/types/types';
+
 const URL = import.meta.env.VITE_BASE_URL;
 
 export async function getList(listId: string) {
@@ -13,15 +15,7 @@ export async function getList(listId: string) {
       id: string;
       createdAt: string;
       name: string;
-      items: {
-        id: string;
-        createdAt: string;
-        name: string;
-        expirationDate: string;
-        brand: string;
-        sku: number;
-        dairyListId: string;
-      }[];
+      items: Item[];
     };
   } = await res.json();
 
