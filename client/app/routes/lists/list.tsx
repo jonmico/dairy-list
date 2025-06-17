@@ -17,11 +17,33 @@ export async function loader({ params }: Route.LoaderArgs) {
   return { list: data.list };
 }
 
+export async function action({ request }: Route.ActionArgs) {
+  // TODO: Code action.
+}
+
 // TODO: Group items by date
+// TODO: Add 'Save' button to save checked expired items.
 export default function List({ loaderData }: Route.ComponentProps) {
+  const [checkedItems, setCheckedItems] = useState(new Set<number>());
+
+  function handleCheck(sku: number, checked: boolean) {
+    setCheckedItems((state) => {
+      const copy = new Set(state);
+      if (checked) {
+        copy.add(sku);
+      } else {
+        copy.delete(sku);
+      }
+      return copy;
+    });
+  }
+
+  console.log('checkedItems', checkedItems);
+
   const renderedList = loaderData.list.items.map((item) => {
     return (
       <ListItem
+        handleCheck={handleCheck}
         key={item.sku}
         item={item}
       />
@@ -47,24 +69,20 @@ export default function List({ loaderData }: Route.ComponentProps) {
 
 interface ListItemProps {
   item: Item;
+  handleCheck: (sku: number, checked: boolean) => void;
 }
 
-// TODO: When refreshing page, random items are checked and still in the list. Why?
-
-// TODO: Style checked items.
-// TODO: Add 'Save' button to save checked expired items. Probably need to move state up into list.
+// FIXME: When refreshing page, random items are checked and still in the list. Why?
+// TODO: This needs to be styled better.
 function ListItem(props: ListItemProps) {
   const date = new Date(props.item.expirationDate).toLocaleDateString();
   const skuString = String(props.item.sku);
   const [isChecked, setIsChecked] = useState(false);
 
-  // FIXME: Does this work?
   function handleCheck(evt: React.ChangeEvent<HTMLInputElement>) {
     setIsChecked(evt.target.checked);
-    props.item.expired = evt.target.checked;
+    props.handleCheck(props.item.sku, evt.target.checked);
   }
-
-  console.log(props.item);
 
   return (
     <li
