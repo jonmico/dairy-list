@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getList } from '~/.server/services/list';
 import type { Item } from '~/types/types';
 import type { Route } from './+types/list';
+import { Form } from 'react-router';
 
 export async function loader({ params }: Route.LoaderArgs) {
   const data = await getList(params.id);
@@ -24,15 +25,15 @@ export async function action({ request }: Route.ActionArgs) {
 // TODO: Group items by date
 // TODO: Add 'Save' button to save checked expired items.
 export default function List({ loaderData }: Route.ComponentProps) {
-  const [checkedItems, setCheckedItems] = useState(new Set<number>());
+  const [checkedItems, setCheckedItems] = useState(new Set<string>());
 
-  function handleCheck(sku: number, checked: boolean) {
+  function handleCheck(id: string, checked: boolean) {
     setCheckedItems((state) => {
       const copy = new Set(state);
       if (checked) {
-        copy.add(sku);
+        copy.add(id);
       } else {
-        copy.delete(sku);
+        copy.delete(id);
       }
       return copy;
     });
@@ -63,13 +64,23 @@ export default function List({ loaderData }: Route.ComponentProps) {
           <ul className='overflow-scroll'>{renderedList}</ul>
         </div>
       </div>
+      {checkedItems.size > 0 ? (
+        <Form
+          method='post'
+          action='expire-items'
+        >
+          <button className='w-full  rounded py-1.5 px-4 bg-indigo-700'>
+            Save
+          </button>
+        </Form>
+      ) : null}
     </div>
   );
 }
 
 interface ListItemProps {
   item: Item;
-  handleCheck: (sku: number, checked: boolean) => void;
+  handleCheck: (id: string, checked: boolean) => void;
 }
 
 // FIXME: When refreshing page, random items are checked and still in the list. Why?
@@ -81,7 +92,7 @@ function ListItem(props: ListItemProps) {
 
   function handleCheck(evt: React.ChangeEvent<HTMLInputElement>) {
     setIsChecked(evt.target.checked);
-    props.handleCheck(props.item.sku, evt.target.checked);
+    props.handleCheck(props.item.id, evt.target.checked);
   }
 
   return (
