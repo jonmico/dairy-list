@@ -39,8 +39,6 @@ export default function List({ loaderData }: Route.ComponentProps) {
     });
   }
 
-  console.log('checkedItems', checkedItems);
-
   const renderedList = loaderData.list.items.map((item) => {
     return (
       <ListItem
@@ -61,7 +59,9 @@ export default function List({ loaderData }: Route.ComponentProps) {
       </div>
       <div>
         <div>
-          <ul className='overflow-scroll'>{renderedList}</ul>
+          <ul className='overflow-scroll flex flex-col gap-2 py-1.5'>
+            {renderedList}
+          </ul>
         </div>
       </div>
       {checkedItems.size > 0 ? (
@@ -97,7 +97,7 @@ function ListItem(props: ListItemProps) {
 
   return (
     <li
-      className={`flex gap-3 items-center ${
+      className={`flex gap-3 items-center bg-blue-950/50 rounded p-2 ${
         isChecked && 'line-through text-slate-500/65'
       }`}
     >
