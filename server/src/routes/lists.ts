@@ -1,9 +1,16 @@
 import { Router } from 'express';
-import { addItems, createList, getList, getLists } from '../controllers/lists';
+import {
+  addItems,
+  createList,
+  getList,
+  getLists,
+  expireItems,
+} from '../controllers/lists';
 
 export const listsRouter = Router();
 
+listsRouter.get('/', getLists);
+listsRouter.get('/:id', getList);
 listsRouter.post('/create', createList);
 listsRouter.post('/:id/items', addItems);
-listsRouter.get('/:id', getList);
-listsRouter.get('/', getLists);
+listsRouter.post('/:id/items/expire', expireItems);

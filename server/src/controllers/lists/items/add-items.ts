@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { db } from '../../db/db';
+import { db } from '../../../db/db';
 
 export async function addItems(
   req: Request,

@@ -24,6 +24,7 @@ export async function action({ request }: Route.ActionArgs) {
 
 // TODO: Group items by date
 // TODO: Add 'Save' button to save checked expired items.
+// TODO: Probably switch this to a fetcher instead of a form.
 export default function List({ loaderData }: Route.ComponentProps) {
   const [checkedItems, setCheckedItems] = useState(new Set<string>());
 
