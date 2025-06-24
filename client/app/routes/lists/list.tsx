@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { getList } from '~/.server/services/list';
 import type { Item } from '~/types/types';
 import type { Route } from './+types/list';
-import { Form } from 'react-router';
+import { Form, useFetcher } from 'react-router';
+import type { action } from './items/expire-items';
 
 export async function loader({ params }: Route.LoaderArgs) {
   const data = await getList(params.id);
@@ -18,15 +19,12 @@ export async function loader({ params }: Route.LoaderArgs) {
   return { list: data.list };
 }
 
-export async function action({ request }: Route.ActionArgs) {
-  // TODO: Code action.
-}
-
 // TODO: Group items by date
 // TODO: Add 'Save' button to save checked expired items.
 // TODO: Probably switch this to a fetcher instead of a form.
 export default function List({ loaderData }: Route.ComponentProps) {
   const [checkedItems, setCheckedItems] = useState(new Set<string>());
+  const fetcher = useFetcher<typeof action>();
 
   function handleCheck(id: string, checked: boolean) {
     setCheckedItems((state) => {
@@ -50,6 +48,16 @@ export default function List({ loaderData }: Route.ComponentProps) {
     );
   });
 
+  function handleSaveExpiredItems(evt: React.FormEvent<HTMLFormElement>) {
+    evt.preventDefault();
+    const jsonCheckedItems = JSON.stringify(checkedItems);
+
+    fetcher.submit(
+      { list: jsonCheckedItems },
+      { method: 'post', action: 'expire-items' }
+    );
+  }
+
   return (
     <div className='h-full grid grid-rows-[auto_1fr_auto]'>
       <div className='flex justify-between items-center gap-3'>
@@ -66,14 +74,11 @@ export default function List({ loaderData }: Route.ComponentProps) {
         </div>
       </div>
       {checkedItems.size > 0 ? (
-        <Form
-          method='post'
-          action='expire-items'
-        >
-          <button className='w-full  rounded py-1.5 px-4 bg-indigo-700'>
+        <form onSubmit={handleSaveExpiredItems}>
+          <button className='w-full rounded py-1.5 px-4 bg-indigo-700'>
             Save
           </button>
-        </Form>
+        </form>
       ) : null}
     </div>
   );
