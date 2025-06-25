@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { db } from '../../../db/db';
 
 export async function expireItems(
   req: Request,
@@ -7,11 +8,24 @@ export async function expireItems(
 ) {
   try {
     const { id } = req.params;
+    const { list } = req.body;
 
-    console.log('expireItems endpoint.');
-    console.log('List id from expireItems endpoint:', id);
+    await db.listItem.updateMany({
+      where: {
+        dairyListId: id,
+        id: { in: list },
+      },
+      data: {
+        expired: true,
+      },
+    });
 
-    res.json({ message: 'expireItems endpoint.' });
+    const updatedList = await db.dairyList.findUnique({
+      where: { id },
+      include: { items: true },
+    });
+
+    res.json({ list: updatedList });
     return;
   } catch (err) {
     next(err);

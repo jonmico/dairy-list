@@ -39,18 +39,22 @@ export default function List({ loaderData }: Route.ComponentProps) {
   }
 
   const renderedList = loaderData.list.items.map((item) => {
-    return (
-      <ListItem
-        handleCheck={handleCheck}
-        key={item.sku}
-        item={item}
-      />
-    );
+    if (!item.expired)
+      return (
+        <ListItem
+          handleCheck={handleCheck}
+          key={item.sku}
+          item={item}
+        />
+      );
   });
 
   function handleSaveExpiredItems(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
-    const jsonCheckedItems = JSON.stringify(checkedItems);
+
+    const jsonCheckedItems = JSON.stringify([...checkedItems]);
+
+    setCheckedItems(new Set<string>());
 
     fetcher.submit(
       { list: jsonCheckedItems },

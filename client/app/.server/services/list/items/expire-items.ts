@@ -1,16 +1,22 @@
+import type { Item } from '~/types/types';
+
 const URL = import.meta.env.VITE_BASE_URL;
 
-export async function expireItems(id: string) {
+interface ExpireItemsResponse {
+  list: { id: string; createdAt: string; name: string; items: Item[] };
+}
+
+export async function expireItems(id: string, list: string[]) {
   // TODO: Write this.
   const res = await fetch(`${URL}/lists/${id}/items/expire`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify({ list }),
   });
 
-  const data = await res.json();
+  const data: ExpireItemsResponse = await res.json();
 
-  console.log(data);
-  console.log('Expire items. Congratulations, you made it.');
+  console.log(data.list.items);
 }
