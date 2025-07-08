@@ -23,18 +23,19 @@ export async function loader({ params }: Route.LoaderArgs) {
 // TODO: Add 'Save' button to save checked expired items.
 // TODO: Probably switch this to a fetcher instead of a form.
 export default function List({ loaderData }: Route.ComponentProps) {
-  const [checkedItems, setCheckedItems] = useState(new Set<string>());
+  const [checkedItems, setCheckedItems] = useState<Item[]>([]);
   const fetcher = useFetcher<typeof action>();
 
-  function handleCheck(id: string, checked: boolean) {
+  console.log(checkedItems);
+
+  function handleCheck(item: Item, checked: boolean) {
     setCheckedItems((state) => {
-      const copy = new Set(state);
       if (checked) {
-        copy.add(id);
+        item.expired = true;
+        return [...state, item];
       } else {
-        copy.delete(id);
+        return state.filter((i) => i.id !== item.id);
       }
-      return copy;
     });
   }
 
@@ -54,7 +55,7 @@ export default function List({ loaderData }: Route.ComponentProps) {
 
     const jsonCheckedItems = JSON.stringify([...checkedItems]);
 
-    setCheckedItems(new Set<string>());
+    setCheckedItems([]);
 
     fetcher.submit(
       { list: jsonCheckedItems },
@@ -77,7 +78,7 @@ export default function List({ loaderData }: Route.ComponentProps) {
           </ul>
         </div>
       </div>
-      {checkedItems.size > 0 ? (
+      {checkedItems.length > 0 ? (
         <form onSubmit={handleSaveExpiredItems}>
           <button className='w-full rounded py-1.5 px-4 bg-indigo-700'>
             Save
@@ -90,7 +91,7 @@ export default function List({ loaderData }: Route.ComponentProps) {
 
 interface ListItemProps {
   item: Item;
-  handleCheck: (id: string, checked: boolean) => void;
+  handleCheck: (item: Item, checked: boolean) => void;
 }
 
 // FIXME: When refreshing page, random items are checked and still in the list. Why?
@@ -102,7 +103,8 @@ function ListItem(props: ListItemProps) {
 
   function handleCheck(evt: React.ChangeEvent<HTMLInputElement>) {
     setIsChecked(evt.target.checked);
-    props.handleCheck(props.item.id, evt.target.checked);
+    const item = { ...props.item };
+    props.handleCheck(item, evt.target.checked);
   }
 
   return (
