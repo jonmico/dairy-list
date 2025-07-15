@@ -11,8 +11,6 @@ export async function expireItems(
     const { id } = req.params;
     const { list } = req.body as { list: ListItem[] };
 
-    console.log(list);
-
     await Promise.all(
       list.map((item) => {
         return db.listItem.update({

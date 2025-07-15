@@ -4,7 +4,7 @@ import { getList } from '~/.server/services/list';
 import type { Item } from '~/types/types';
 import type { Route } from './+types/list';
 import { Form, useFetcher } from 'react-router';
-import type { action } from './items/expire-items';
+import type { action } from './items/edit-items';
 
 export async function loader({ params }: Route.LoaderArgs) {
   const data = await getList(params.id);
@@ -25,8 +25,6 @@ export async function loader({ params }: Route.LoaderArgs) {
 export default function List({ loaderData }: Route.ComponentProps) {
   const [checkedItems, setCheckedItems] = useState<Item[]>([]);
   const fetcher = useFetcher<typeof action>();
-
-  console.log(checkedItems);
 
   function handleCheck(item: Item, checked: boolean) {
     setCheckedItems((state) => {

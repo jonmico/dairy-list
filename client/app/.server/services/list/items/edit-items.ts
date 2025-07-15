@@ -6,9 +6,9 @@ interface ExpireItemsResponse {
   list: { id: string; createdAt: string; name: string; items: Item[] };
 }
 
-export async function expireItems(id: string, list: Item[]) {
+export async function editItems(id: string, list: Item[]) {
   // TODO: Write this.
-  const res = await fetch(`${URL}/lists/${id}/items/expire`, {
+  const res = await fetch(`${URL}/lists/${id}/items/edit`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
