@@ -18,5 +18,5 @@ export async function editItems(id: string, list: Item[]) {
 
   const data: ExpireItemsResponse = await res.json();
 
-  console.log(data.list.items);
+  return { list: data.list };
 }

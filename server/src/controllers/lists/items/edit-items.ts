@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { db } from '../../../db/db';
 import { ListItem } from '../../../generated/prisma';
 
-export async function expireItems(
+export async function editItems(
   req: Request,
   res: Response,
   next: NextFunction

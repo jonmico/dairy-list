@@ -4,7 +4,7 @@ import {
   createList,
   getList,
   getLists,
-  expireItems,
+  editItems,
 } from '../controllers/lists';
 
 export const listsRouter = Router();
@@ -13,4 +13,4 @@ listsRouter.get('/', getLists);
 listsRouter.get('/:id', getList);
 listsRouter.post('/create', createList);
 listsRouter.post('/:id/items', addItems);
-listsRouter.post('/:id/items/expire', expireItems);
+listsRouter.post('/:id/items/edit', editItems);

@@ -8,7 +8,7 @@ export async function action({ request, params }: Route.ActionArgs) {
   const list = formData.get('list') as string;
   const parsedList = JSON.parse(list) as Item[];
 
-  await editItems(id, parsedList);
+  const response = await editItems(id, parsedList);
 
-  return { message: 'this is some data' };
+  return { list: response.list };
 }
